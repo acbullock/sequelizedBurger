@@ -1,24 +1,38 @@
-// Import the ORM that contains the functions that will interact with the database.
-var orm = require("../config/orm.js");
+module.exports = function(sequelize, DataTypes){
+  var Burger = sequelize.define("Burger", {
+    burger_name: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate:{
+        len: [1]
+      }
 
-var burger = {
-  selectAll: function(cb) {
-    orm.selectAll("burgers", function(res) {
-      cb(res);
-    });
-  },
-  // The variables cols and vals are arrays.
-  insertOne: function(cols, vals, cb) {
-    orm.insertOne("burgers", cols, vals, function(res) {
-      cb(res);
-    });
-  },
-  updateOne: function(objColVals, condition, cb) {
-    orm.updateOne("burgers", objColVals, condition, function(res) {
-      cb(res);
-    });
-  }
-};
+    },
+    customer_name: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      validate:{
+        len: [1]
+      }
 
-// Export the database functions for the controller (burgersController.js).
-module.exports = burger;
+    },
+    devoured: { 
+      type: DataTypes.BOOLEAN, 
+      allowNull: false, 
+      defaultValue: false
+    }
+
+    
+  });
+  Burger.associate = function(models){
+
+    Burger.hasOne(models.Customer, {
+      foreignKey:{
+        allowNull:false
+      }
+    });
+  };
+  
+
+  return Burger;
+}
